@@ -9,9 +9,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-
       - name: Check for GitHub API key
         if: ${{ github.event_name == 'push' }}
         env:
@@ -103,24 +100,4 @@ jobs:
           zip -r "update.zip" *
           mv update.zip ../
           cd ..
-
-      - name: Create LinkStack Releases
-        if: ${{ github.event_name == 'push' }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
-        run: |
-          cd /tmp/linkstack
-          LATEST_RELEASE_TAG=$(git describe --tags --abbrev=0)
-          if [ -n "$LATEST_RELEASE_TAG" ]; then
-            echo "Adding files to the latest release: $LATEST_RELEASE_TAG"
-            RELEASE_ID=$(curl -s -X GET "https://api.github.com/repos/${{ github.repository }}/releases/tags/$LATEST_RELEASE_TAG" -H "Authorization: token $GITHUB_TOKEN" | jq -r '.id')
-            if [ -n "$RELEASE_ID" ]; then
-              echo "Latest release ID: $RELEASE_ID"
-              curl -X POST "https://uploads.github.com/repos/${{ github.repository }}/releases/$RELEASE_ID/assets?name=linkstack.zip" -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/zip" --data-binary "@/tmp/linkstack/linkstack.zip"
-              curl -X POST "https://uploads.github.com/repos/${{ github.repository }}/releases/$RELEASE_ID/assets?name=update.zip" -H "Authorization: token $GITHUB_TOKEN" -H "Content-Type: application/zip" --data-binary "@/tmp/linkstack/update.zip"
-            else
-              echo "Failed to retrieve the latest release ID."
-            fi
-          else
-            echo "No latest release tag found."
-          fi
+          echo "$LATEST_TAG"
