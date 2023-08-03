@@ -143,12 +143,8 @@ jobs:
             # Fetch the latest commit's SHA for the file
             sha=$(curl -u "$username:$token" -s "https://api.github.com/repos/$repo/contents/$file_path" | grep -oP '(?<="sha": ")[^"]+')
 
-            # Content for version.json
-            content="$version\n"
-            base64_content=$(echo -ne "$content" | base64)
-
-            # JSON payload with the new content and the correct sha
-            payload="{\"message\": \"Update version.json to $version\", \"content\": \"$base64_content\", \"sha\": \"$sha\"}"
+            # JSON payload with the new content
+            payload="{\"message\": \"Update version.json to $version\", \"content\": \"$(echo -n "{\"version\":\"$version\"}" | base64)\", \"sha\": \"$sha\"}"
 
             # API endpoint to create a new commit
             url="https://api.github.com/repos/$repo/contents/$file_path"
