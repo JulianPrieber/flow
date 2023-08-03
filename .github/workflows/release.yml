@@ -144,6 +144,7 @@ jobs:
             sha=$(curl -u "$username:$token" -s "https://api.github.com/repos/$repo/contents/$file_path" | grep -oP '(?<="sha": ")[^"]+')
 
             # Get version from version.json
+            cd /tmp/linkstack
             version=$(<version.json)
 
             # JSON payload with the new content
