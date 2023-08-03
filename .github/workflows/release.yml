@@ -138,13 +138,7 @@ jobs:
 
             # The repository and file path
             repo="JulianPrieber/flow"
-            file_path="/tmp/linkstack/version.json"
-
-            # Read the content from the local version.json file
-            read -r gitversion < /tmp/linkstack/version.json
-
-            # Replace $version with the contents of gitversion (e.g., 1.0.0)
-            version="$gitversion"
+            file_path="version.json"
 
             # Fetch the latest commit's SHA for the file
             sha=$(curl -u "$username:$token" -s "https://api.github.com/repos/$repo/contents/$file_path" | grep -oP '(?<="sha": ")[^"]+')
