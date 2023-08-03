@@ -121,15 +121,6 @@ jobs:
 
             # Upload 'linkstack.zip'
             gh release upload "${GITHUB_REF##*/}" "linkstack.zip" --clobber -R "$REPO_NAME"
-
-            # Configure Git user for the current repository
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git config user.name "GitHub Actions"
-
-            # Commit and push version.json
-            git add version.json
-            git commit -m "Update version.json to $version"
-            git push origin main
           fi
 
       - name: Update version.json
