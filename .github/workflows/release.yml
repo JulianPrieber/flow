@@ -1,12 +1,26 @@
 name: Setup Ubuntu with Composer and PHP 8
 on:
-  workflow_dispatch:
+  push:
+    tags:
+      - '*'
 
 jobs:
   setup-ubuntu:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check for GitHub API key
+        if: ${{ github.event_name == 'push' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+        run: |
+          if [ -z "${GITHUB_TOKEN}" ]; then
+            echo "GitHub API key not found. Exiting..."
+            exit 0
+          else
+            echo "GitHub API key found."
+          fi
+
       - name: Install PHP cli + composer
         run: |
           sudo apt update
@@ -19,9 +33,17 @@ jobs:
           cd /tmp
           mkdir linkstack
           cd linkstack
+
+          # Fetch the latest release tag using GitHub API
+          LATEST_TAG=$(curl -sH "Authorization: token ${GITHUB_TOKEN}" https://api.github.com/repos/LinkStackOrg/LinkStack/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+          echo "Latest tag: $LATEST_TAG"
+
+          # Remove the "v" prefix from the latest tag
+          version=${LATEST_TAG#"v"}
+          echo "Version without 'v': $version"
           
-          echo "V1.0.0" > version.json
-          
+          echo "$version" > version.json
+
           git clone https://github.com/LinkStackOrg/LinkStack/
 
           mkdir linkstack
@@ -87,5 +109,22 @@ jobs:
           mv update.zip ../
           cd ..
 
-      - name: Keep container running
-        run: tail -f /dev/null
+      - name: Create GitHub Release
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          cd /tmp/linkstack
+
+          # Create a new GitHub release with the latest tag
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag "$LATEST_TAG"
+          git push origin "$LATEST_TAG"
+
+          # Upload linkstack.zip to the latest release
+          GITHUB_RELEASE_ID=$(curl -sH "Authorization: token ${GITHUB_TOKEN}" https://api.github.com/repos/LinkStackOrg/LinkStack/releases/tags/"$LATEST_TAG" | jq '.id')
+          echo "GitHub Release ID: $GITHUB_RELEASE_ID"
+          curl -sH "Authorization: token ${GITHUB_TOKEN}" -H "Content-Type: application/zip" --data-binary "@/tmp/linkstack/linkstack.zip" "https://uploads.github.com/repos/LinkStackOrg/LinkStack/releases/$GITHUB_RELEASE_ID/assets?name=linkstack.zip"
+
+          # Upload update.zip to the latest release
+          curl -sH "Authorization: token ${GITHUB_TOKEN}" -H "Content-Type: application/zip" --data-binary "@/tmp/linkstack/update/update.zip" "https://uploads.github.com/repos/LinkStackOrg/LinkStack/releases/$GITHUB_RELEASE_ID/assets?name=update.zip"
+          
