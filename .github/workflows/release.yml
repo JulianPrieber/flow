@@ -138,7 +138,7 @@ jobs:
 
             # The repository and file path
             repo="JulianPrieber/flow"
-            file_path="version.json"
+            file_path="/tmp/linkstack/version.json"
 
             # Read the content from the local version.json file
             read -r gitversion < version.json
