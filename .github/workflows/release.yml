@@ -113,6 +113,12 @@ jobs:
             echo "GitHub API key found."
             cd /tmp/linkstack
 
-            # Add the files to the latest release with the tag ${GITHUB_REF##*/}
-            gh release upload "${GITHUB_REF##*/}" "update.zip" "linkstack.zip"
+            # Get the repository name in the format 'OWNER/REPO'
+            REPO_NAME="JulianPrieber/flow"
+
+            # Upload 'update.zip'
+            gh release upload "${GITHUB_REF##*/}" "update.zip" --clobber -R "$REPO_NAME"
+
+            # Upload 'linkstack.zip'
+            gh release upload "${GITHUB_REF##*/}" "linkstack.zip" --clobber -R "$REPO_NAME"
           fi
