@@ -36,6 +36,9 @@ jobs:
 
           echo "${GITHUB_REF##*/}" > version.json
 
+          TAG_VERSION="${GITHUB_REF##*/}"
+          version=${TAG_VERSION#"v"}
+
           git clone https://github.com/LinkStackOrg/LinkStack/
 
           mkdir linkstack
@@ -72,9 +75,6 @@ jobs:
           rm linkstack/INSTALLING
 
           cd ..
-          
-          read -r version < version.json
-          mkdir "$version"
 
           rsync -av linkstack/linkstack/ "$version"
           
