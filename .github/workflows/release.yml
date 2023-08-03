@@ -106,9 +106,14 @@ jobs:
         run: |
           cd /tmp/linkstack
 
-          # Create a new GitHub release with the latest tag
+          # Initialize a new Git repository
+          git init
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+
+          # Create a new GitHub release with the latest tag
+          git add .
+          git commit -m "Create release $LATEST_TAG"
           git tag "$LATEST_TAG"
           git push origin "$LATEST_TAG"
 
@@ -119,4 +124,6 @@ jobs:
 
           # Upload update.zip to the latest release
           curl -sH "Authorization: token ${GITHUB_TOKEN}" -H "Content-Type: application/zip" --data-binary "@/tmp/linkstack/update/update.zip" "https://uploads.github.com/repos/LinkStackOrg/LinkStack/releases/$GITHUB_RELEASE_ID/assets?name=update.zip"
-          
+
+      - name: Keep container running
+        run: tail -f /dev/null
