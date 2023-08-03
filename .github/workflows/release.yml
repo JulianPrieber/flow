@@ -9,6 +9,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
       - name: Check for GitHub API key
         if: ${{ github.event_name == 'push' }}
         env:
@@ -106,6 +109,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
         run: |
+          cd /tmp/linkstack
           LATEST_RELEASE_TAG=$(git describe --tags --abbrev=0)
           if [ -n "$LATEST_RELEASE_TAG" ]; then
             echo "Adding files to the latest release: $LATEST_RELEASE_TAG"
