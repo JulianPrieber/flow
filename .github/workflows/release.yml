@@ -146,10 +146,7 @@ jobs:
             # Get version from version.json
             cd /tmp/linkstack
             version=$(<version.json)
-            version=$(<version.json)
-            if [ "${version: -1}" != $'\n' ]; then
-                version="$version"$'\n'
-            fi
+            version="${version}"$'\n'
 
             # JSON payload with the new content
             payload="{\"message\": \"Update version.json to $version", \"content\": \"$(echo -n "$version"| base64)\", \"sha\": \"$sha\"}"
