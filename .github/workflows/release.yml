@@ -140,18 +140,21 @@ jobs:
             repo="JulianPrieber/flow"
             file_path="/tmp/linkstack/version.json"
 
-            # Read the version from /tmp/linkstack/version.json
+            # Read the content from the local version.json file
             read -r gitversion < /tmp/linkstack/version.json
 
-            # JSON payload with the new content
-            content="{\"version\":\"$gitversion\"}"
-            base64_content=$(echo -n "$content" | base64)
+            # Replace $version with the contents of gitversion (e.g., 1.0.0)
+            version="$gitversion"
 
             # Fetch the latest commit's SHA for the file
             sha=$(curl -u "$username:$token" -s "https://api.github.com/repos/$repo/contents/$file_path" | grep -oP '(?<="sha": ")[^"]+')
 
+            # Content for version.json
+            content="$version\n"
+            base64_content=$(echo -ne "$content" | base64)
+
             # JSON payload with the new content and the correct sha
-            payload="{\"message\": \"Update version.json to $gitversion\", \"content\": \"$base64_content\", \"sha\": \"$sha\"}"
+            payload="{\"message\": \"Update version.json to $version\", \"content\": \"$base64_content\", \"sha\": \"$sha\"}"
 
             # API endpoint to create a new commit
             url="https://api.github.com/repos/$repo/contents/$file_path"
