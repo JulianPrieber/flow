@@ -130,4 +130,30 @@ jobs:
             git add version.json
             git commit -m "Update version.json to $version"
             git push origin main
+
+      - name: Update version.json
+        if: ${{ github.event_name == 'push' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+        run: |
+          if [ -z "${GITHUB_TOKEN}" ]; then
+            echo "GitHub API key not found. Exiting..."
+            exit 1
+          else
+            # GitHub credentials
+            username="JulianPrieber"
+            token="${{ secrets.MY_GITHUB_TOKEN }}"
+
+            # The repository and file path
+            repo="JulianPrieber/flow"
+            file_path="version.json"
+
+            # JSON payload with the new content
+            payload="{\"message\": \"Update version.json to $version\", \"content\": \"$(echo -n "{\"version\":\"$version\"}" | base64)\"}"
+
+            # API endpoint to create a new commit
+            url="https://api.github.com/repos/$repo/contents/$file_path"
+
+            # Make the API request to update the file
+            curl -X PUT -u "$username:$token" -d "$payload" "$url"
           fi
