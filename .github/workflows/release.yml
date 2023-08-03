@@ -144,7 +144,7 @@ jobs:
             sha=$(curl -u "$username:$token" -s "https://api.github.com/repos/$repo/contents/$file_path" | grep -oP '(?<="sha": ")[^"]+')
 
             # JSON payload with the new content
-            payload="{\"message\": \"Update version.json to $version\", \"content\": \"$(echo -n "{\"version\":\"$version\"}" | base64)\", \"sha\": \"$sha\"}"
+            payload="{\"message\": \"Update version.json to $version\", \"content\": \"$(echo -n "1.0.0" | base64)\", \"sha\": \"$sha\"}"
 
             # API endpoint to create a new commit
             url="https://api.github.com/repos/$repo/contents/$file_path"
