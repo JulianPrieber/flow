@@ -34,7 +34,7 @@ jobs:
           mkdir linkstack
           cd linkstack
 
-          echo "${{ github.ref }}" > version.json
+          echo "${GITHUB_REF##*/}" > version.json
 
           git clone https://github.com/LinkStackOrg/LinkStack/
 
@@ -100,4 +100,4 @@ jobs:
           zip -r "update.zip" *
           mv update.zip ../
           cd ..
-          echo "${{ github.ref }}"
+          echo "${GITHUB_REF##*/}"
