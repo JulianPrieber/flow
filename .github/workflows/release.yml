@@ -34,15 +34,7 @@ jobs:
           mkdir linkstack
           cd linkstack
 
-          # Fetch the latest release tag using GitHub API
-          LATEST_TAG=$(curl -sH "Authorization: token ${GITHUB_TOKEN}" https://api.github.com/repos/LinkStackOrg/LinkStack/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
-          echo "Latest tag: $LATEST_TAG"
-
-          # Remove the "v" prefix from the latest tag
-          version=${LATEST_TAG#"v"}
-          echo "Version without 'v': $version"
-          
-          echo "$version" > version.json
+          echo "v1.0.0" > version.json
 
           git clone https://github.com/LinkStackOrg/LinkStack/
 
