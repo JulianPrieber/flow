@@ -100,4 +100,19 @@ jobs:
           zip -r "update.zip" *
           mv update.zip ../
           cd ..
-          echo "${GITHUB_REF##*/}"
+
+      - name: Create GitHub Release
+        if: ${{ github.event_name == 'push' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+        run: |
+          if [ -z "${GITHUB_TOKEN}" ]; then
+            echo "GitHub API key not found. Exiting..."
+            exit 1
+          else
+            echo "GitHub API key found."
+            cd /tmp/linkstack
+
+            # Add the files to the latest release with the tag ${GITHUB_REF##*/}
+            gh release upload "${GITHUB_REF##*/}" "update.zip" "linkstack.zip"
+          fi
