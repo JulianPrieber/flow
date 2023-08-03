@@ -1,0 +1,91 @@
+name: Setup Ubuntu with Composer and PHP 8
+on:
+  workflow_dispatch:
+
+jobs:
+  setup-ubuntu:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install PHP cli + composer
+        run: |
+          sudo apt update
+          sudo apt install php-cli unzip
+          cd ~
+          curl -sS https://getcomposer.org/installer -o /tmp/composer-setup.php
+          HASH=`curl -sS https://composer.github.io/installer.sig`
+          sudo php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
+
+          cd /tmp
+          mkdir linkstack
+          cd linkstack
+          
+          echo "V1.0.0" > version.json
+          
+          git clone https://github.com/LinkStackOrg/LinkStack/
+
+          mkdir linkstack
+          mv LinkStack linkstack/linkstack
+
+          cd linkstack
+
+          curl -o README.md https://gist.githubusercontent.com/JulianPrieber/7a3f18a404c524d59c147a8d4f1ad33c/raw/3008f0893da2effaee56b99ee8b956fa533d9b07/README.md
+
+          cd linkstack
+
+          cp "../../version.json" "version.json"
+          
+          composer update --no-scripts -vvv
+          
+          php artisan migrate
+          php artisan db:seed
+          php artisan db:seed --class="PageSeeder"
+          php artisan db:seed --class="ButtonSeeder"
+          
+          rm -r ".git"
+          rm -r ".github"
+          rm README.md
+          cd ../../
+          
+          rsync -av linkstack/linkstack update
+
+          cd update
+          
+          mv linkstack/database/database.sqlite database.sqlite
+
+          curl -o "HOW TO UPDATE.md" https://gist.githubusercontent.com/JulianPrieber/afc782666cf8c8f7a1a9cb9928498af5/raw/dbbbefb3c88ecd7703efbc866209629d9d130659/HOW%2520TO%2520UPDATE.md
+
+          rm linkstack/INSTALLING
+
+          cd ..
+          
+          read -r version < version.json
+          mkdir "$version"
+
+          rsync -av linkstack/linkstack/ "$version"
+          
+          rm "$version/.env"
+          rm "$version/INSTALLING"
+          rm "$version/database/database.sqlite"
+          cp version.json "$version/version.json"
+          echo "v$version" > "$version/vbeta.json"
+
+          cd /tmp/linkstack
+          
+          cd "$version"
+          zip -r "$version.zip" *
+          mv "$version.zip" ../
+          cd ..
+
+          cd linkstack
+          zip -r "linkstack.zip" *
+          mv linkstack.zip ../
+          cd ..
+
+          cd update
+          zip -r "update.zip" *
+          mv update.zip ../
+          cd ..
+
+      - name: Keep container running
+        run: tail -f /dev/null
