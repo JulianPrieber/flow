@@ -163,7 +163,6 @@ jobs:
 
             # Pull the changes from the remote main branch
             git pull origin main
-            git config --global core.autocrlf false
             
             echo -e "$version\r" > version.json
             
