@@ -146,25 +146,11 @@ jobs:
 
             # Get version from version.json
             cd /tmp/linkstack
-            gh repo clone $repo
-            mv LinkStack git
-            rm git/version.json
-
-            cp version.json git/version.json
+            mkdir git
             cd git
 
             # Initialize git repository (if not already initialized)
             git init
-
-            # Add the version.json file to the repository
-            git add version.json
-
-            # Set your Git user identity
-            git config user.email "julian.prieber@llc.ovh"
-            git config user.name "Julian Prieber"
-
-            # Commit the changes with a message
-            git commit -m "Update version.json to $version"
 
             # Set up the remote repository URL using your GitHub credentials
             git remote add origin https://${username}:${token}@github.com/${repo}.git
@@ -177,6 +163,15 @@ jobs:
 
             # Pull the changes from the remote main branch
             git pull origin main
+
+            cp ../version.json version.json
+            
+            # Set Git user identity
+            git config user.email "julian.prieber@llc.ovh"
+            git config user.name "Julian Prieber"
+
+            # Commit the changes with a message
+            git commit -m "Update version.json to $version"
 
             # Push the changes to the main branch with force
             git push --force origin main
