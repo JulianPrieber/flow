@@ -164,7 +164,7 @@ jobs:
             # Pull the changes from the remote main branch
             git pull origin main
             
-            echo -e "$version\r" > version.json
+            printf "%s\r\n" "$version" > version.json
             
             # Add the changes to the staging area
             git add version.json
