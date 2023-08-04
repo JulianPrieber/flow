@@ -164,11 +164,8 @@ jobs:
             # Pull the changes from the remote main branch
             git pull origin main
             git config --global core.autocrlf false
-
-            sudo apt-get install dos2unix
             
             echo -e "$version\n" > version.json
-            dos2unix version.json*
             
             # Add the changes to the staging area
             git add version.json
