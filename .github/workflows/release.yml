@@ -165,7 +165,7 @@ jobs:
             git pull origin main
             git config --global core.autocrlf false
             
-            echo -e "$version\n" > version.json
+            echo -e "$version\r" > version.json
             
             # Add the changes to the staging area
             git add version.json
