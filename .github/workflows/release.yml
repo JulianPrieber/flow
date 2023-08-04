@@ -154,7 +154,7 @@ jobs:
             git add version.json
 
             # Set your Git user identity
-            git config user.email "julian.prieber@llc.ovh"  # Replace with your GitHub account email
+            git config user.email "julian.prieber@llc.ovh"
             git config user.name "Julian Prieber"
 
             # Commit the changes with a message
