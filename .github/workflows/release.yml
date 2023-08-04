@@ -164,7 +164,7 @@ jobs:
             git remote add origin https://${username}:${token}@github.com/${repo}.git
 
             # Push the changes to GitHub
-            git push --force origin main
+            git push --force
           fi
 
       - name: Upload to Update Server
