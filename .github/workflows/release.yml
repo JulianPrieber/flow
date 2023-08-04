@@ -147,7 +147,7 @@ jobs:
             # Get version from version.json
             cd /tmp/linkstack
             gh repo clone $repo
-            rn LinkStack git
+            mv LinkStack git
             rm git/version.json
 
             cp version.json git/version.json
