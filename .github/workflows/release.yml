@@ -145,6 +145,7 @@ jobs:
 
             # Get version from version.json
             cd /tmp/linkstack
+            echo -e "$version\n" > version.json
             version=$(<version.json)
 
             # JSON payload with the new content
