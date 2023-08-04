@@ -138,15 +138,15 @@ jobs:
 
             # The repository and file path
             repo="JulianPrieber/flow"
-            TAG_VERSION="${GITHUB_REF##*/}"
-            version=${TAG_VERSION#"v"}
+            file_path="version.json"
 
             # Fetch the latest commit's SHA for the file
             sha=$(curl -u "$username:$token" -s "https://api.github.com/repos/$repo/contents/$file_path" | grep -oP '(?<="sha": ")[^"]+')
 
             # Get version from version.json
             cd /tmp/linkstack
-            version=$(<version.json)
+            TAG_VERSION="${GITHUB_REF##*/}"
+            version=${TAG_VERSION#"v"}
 
             # JSON payload with the new content
             payload="{\"message\": \"Update version.json to $version\", \"content\": \"$(echo "$version" | base64 -w 0)\", \"sha\": \"$sha\"}"
