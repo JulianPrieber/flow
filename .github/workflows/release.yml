@@ -161,6 +161,13 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         run: |
             cd /tmp/linkstack
-            TAG_VERSION="${GITHUB_REF##*/}"
             ls
+            TAG_VERSION="${GITHUB_REF##*/}"
+            version=${TAG_VERSION#"v"}
+
+            # Install the OpenSSH client
+            sudo apt-get install -y openssh-client
+
+            # Use SSH to upload the file to the remote server
+            sshpass -p "${{ secrets.SERVER_PASSWORD }}" scp -o StrictHostKeyChecking=no -P ${{ secrets.SERVER_PORT }} $version.zip ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:${{ secrets.REMOTE_PATH }}
 
