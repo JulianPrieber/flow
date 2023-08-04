@@ -144,42 +144,26 @@ jobs:
             # The repository and file path
             repo="JulianPrieber/flow"
 
+            # The repository and file path
+            repo="LinkStackOrg/LinkStack"
+            file_path="version.json"
+
+            # Fetch the latest commit's SHA for the file
+            sha=$(curl -u "$username:$token" -s "https://api.github.com/repos/$repo/contents/$file_path" | grep -oP '(?<="sha": ")[^"]+')
+
             # Get version from version.json
             cd /tmp/linkstack
-            mkdir git
-            cd git
+            TAG_VERSION="${GITHUB_REF##*/}"
+            version=${TAG_VERSION#"v"}
 
-            git config --global core.autocrlf input
+            # JSON payload with the new content
+            payload="{\"message\": \"Update version.json to $version\", \"content\": \"$(echo "$version\n" | base64 -w 0)\", \"sha\": \"$sha\"}"
 
-            # Initialize git repository (if not already initialized)
-            git init
+            # API endpoint to create a new commit
+            url="https://api.github.com/repos/$repo/contents/$file_path"
 
-            # Set up the remote repository URL using your GitHub credentials
-            git remote add origin https://${username}:${token}@github.com/${repo}.git
-
-            # Fetch the remote changes
-            git fetch origin
-
-            # Switch to the main branch
-            git checkout main
-
-            # Pull the changes from the remote main branch
-            git pull origin main
-            
-            printf "%s\n" "$version" > version.json
-            
-            # Add the changes to the staging area
-            git add version.json
-
-            # Set Git user identity
-            git config user.email "julian.prieber@llc.ovh"
-            git config user.name "Julian Prieber"
-
-            # Commit the changes with a message
-            git commit -m "Update version.json to $version"
-
-            # Push the changes to the main branch with force
-            git push origin main
+            # Make the API request to update the file
+            curl -X PUT -u "$username:$token" -d "$payload" "$url"
           fi
 
       - name: Upload to Update Server
