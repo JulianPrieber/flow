@@ -84,6 +84,8 @@ jobs:
           cp version.json "$version/version.json"
           echo "v$version" > "$version/vbeta.json"
 
+          touch /tmp/linkstack/linkstack/linkstack/storage/app/ISINSTALLED
+
           cd /tmp/linkstack
           
           cd "$version"
