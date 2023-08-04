@@ -167,6 +167,9 @@ jobs:
             echo $version > version.json
             echo >> version.json
             
+            # Add the changes to the staging area
+            git add version.json
+
             # Set Git user identity
             git config user.email "julian.prieber@llc.ovh"
             git config user.name "Julian Prieber"
@@ -175,7 +178,7 @@ jobs:
             git commit -m "Update version.json to $version"
 
             # Push the changes to the main branch with force
-            git push --force origin main
+            git push origin main
           fi
 
       - name: Upload to Update Server
