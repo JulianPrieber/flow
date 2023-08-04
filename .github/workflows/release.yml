@@ -166,10 +166,9 @@ jobs:
             git config --global core.autocrlf input
 
             sudo apt-get install dos2unix
-
             
             echo -e "$version\n" > version.json
-            dos2unix version.json
+            dos2unix version.json*
             
             # Add the changes to the staging area
             git add version.json
