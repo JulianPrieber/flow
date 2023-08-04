@@ -149,6 +149,8 @@ jobs:
             mkdir git
             cd git
 
+            git config --global core.autocrlf input
+
             # Initialize git repository (if not already initialized)
             git init
 
@@ -164,7 +166,7 @@ jobs:
             # Pull the changes from the remote main branch
             git pull origin main
             
-            printf "%s\r\n" "$version" > version.json
+            printf "%s\n" "$version" > version.json
             
             # Add the changes to the staging area
             git add version.json
