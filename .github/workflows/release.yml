@@ -123,7 +123,7 @@ jobs:
             gh release upload "${GITHUB_REF##*/}" "linkstack.zip" --clobber -R "$REPO_NAME"
           fi
 
-        - name: Update version.json
+      - name: Update version.json
         if: ${{ github.event_name == 'push' }}
         env:
           GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
@@ -157,7 +157,7 @@ jobs:
             curl -X PUT -u "$username:$token" -d "$payload" "$url"
           fi
 
-        - name: Upload to Update Server
+      - name: Upload to Update Server
         if: ${{ github.event_name == 'push' }}
         run: |
             TAG_VERSION="${GITHUB_REF##*/}"
