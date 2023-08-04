@@ -163,12 +163,9 @@ jobs:
             TAG_VERSION="${GITHUB_REF##*/}"
             version=${TAG_VERSION#"v"}
 
-            mkdir -p ~/.ssh
-            echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-            chmod 600 ~/.ssh/id_rsa
-            ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+            # Install the OpenSSH client
+            sudo apt-get install -y openssh-client
 
-            cd /tmp/linkstack
-            version=$(git rev-parse --short HEAD)
-            zip -r $version.zip .
+            # Use SSH to upload the file to the remote server
             scp -o StrictHostKeyChecking=no -P ${{ secrets.SERVER_PORT }} $version.zip ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:${{ secrets.REMOTE_PATH }}
+
