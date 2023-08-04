@@ -146,6 +146,14 @@ jobs:
 
             # Get version from version.json
             cd /tmp/linkstack
+            mkdir git
+            cd git
+            gh repo clone $repo
+            rm version.json
+            cd ..
+
+            cp version.json git/version.json
+            cd git
 
             # Initialize git repository (if not already initialized)
             git init
