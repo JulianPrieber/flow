@@ -166,6 +166,7 @@ jobs:
 
             echo $version > version.json
             echo >> version.json
+            echo >> version.json
             
             # Add the changes to the staging area
             git add version.json
