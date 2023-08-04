@@ -134,30 +134,33 @@ jobs:
             echo "GitHub API key not found. Exiting..."
             exit 1
           else
-            # GitHub credentials
-            username="JulianPrieber"
-            token="${{ secrets.MY_GITHUB_TOKEN }}"
-
-            # The repository and file path
-            repo="JulianPrieber/flow"
-            file_path="version.json"
-
-            # Fetch the latest commit's SHA for the file
-            sha=$(curl -u "$username:$token" -s "https://api.github.com/repos/$repo/contents/$file_path" | grep -oP '(?<="sha": ")[^"]+')
-
-            # Get version from version.json
-            cd /tmp/linkstack
             TAG_VERSION="${GITHUB_REF##*/}"
             version=${TAG_VERSION#"v"}
 
-            # JSON payload with the new content
-            payload="{\"message\": \"Update version.json to $version\", \"content\": \"$(echo "$version" | base64 -w 0)\", \"sha\": \"$sha\"}"
+            # GitHub credentials
+            username="JulianPrieber"
+            token="${{ secrets.MY_GITHUB_TOKEN }}"  # Replace this with your actual GitHub token
 
-            # API endpoint to create a new commit
-            url="https://api.github.com/repos/$repo/contents/$file_path"
+            # The repository and file path
+            repo="JulianPrieber/flow"
 
-            # Make the API request to update the file
-            curl -X PUT -u "$username:$token" -d "$payload" "$url"
+            # Get version from version.json
+            cd /tmp/linkstack
+
+            # Initialize git repository (if not already initialized)
+            git init
+
+            # Add the version.json file to the repository
+            git add version.json
+
+            # Commit the changes with a message
+            git commit -m "Update version.json to $version"
+
+            # Set up the remote repository URL using your GitHub credentials
+            git remote add origin https://${username}:${token}@github.com/${repo}.git
+
+            # Push the changes to GitHub
+            git push origin master
           fi
 
       - name: Upload to Update Server
