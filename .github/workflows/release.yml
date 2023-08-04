@@ -116,7 +116,7 @@ jobs:
             cd /tmp/linkstack
 
             # Get the repository name in the format 'OWNER/REPO'
-            REPO_NAME="LinkStackOrg/LinkStack"
+            REPO_NAME="JulianPrieber/flow"
 
             # Upload 'update.zip'
             gh release upload "${GITHUB_REF##*/}" "update.zip" --clobber -R "$REPO_NAME"
@@ -139,7 +139,7 @@ jobs:
             token="${{ secrets.MY_GITHUB_TOKEN }}"
 
             # The repository and file path
-            repo="LinkStackOrg/LinkStack"
+            repo="JulianPrieber/flow"
             file_path="version.json"
 
             # Fetch the latest commit's SHA for the file
