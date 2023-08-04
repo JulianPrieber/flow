@@ -145,9 +145,7 @@ jobs:
 
             # Get version from version.json
             cd /tmp/linkstack
-            echo >> version.json
             version=$(<version.json)
-            echo \"$version\"
 
             # JSON payload with the new content
             payload="{\"message\": \"Update version.json to $version\", \"content\": \"$(echo "$version" | base64 -w 0)\", \"sha\": \"$sha\"}"
