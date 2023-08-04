@@ -164,7 +164,8 @@ jobs:
             # Pull the changes from the remote main branch
             git pull origin main
 
-            cp ../version.json version.json
+            echo $version > version.json
+            echo >> version.json
             
             # Set Git user identity
             git config user.email "julian.prieber@llc.ovh"
