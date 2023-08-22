@@ -16,4 +16,7 @@ jobs:
           HASH=`curl -sS https://composer.github.io/installer.sig`
           sudo php /tmp/composer-setup.php --install-dir=/usr/local/bin --filename=composer
 
+          export PATH=/path/to/php8.0/bin:$PATH
+          source ~/.bashrc 
+
           php -v
